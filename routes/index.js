@@ -3,7 +3,7 @@
 module.exports = function (app, io, nconf) {
   var irc = require('irc');
   var moment = require('moment');
-  var clients = {};
+  var client;
   var server;
   var channel;
   var nick = 'Guest' + Math.floor(Math.random() * (3000 - 1000) + 1000);
@@ -19,38 +19,49 @@ module.exports = function (app, io, nconf) {
       case '/server':
         server = input[1].trim();
         console.log('1 ' , server);
-        clients[server] = new irc.Client(server, nick);
+        client = new irc.Client(server, nick);
 
-        clients[server].addListener('registered', function (message) {
+        client.addListener('registered', function (message) {
           console.log('registered ', message);
         });
 
-        clients[server].addListener('message', function (from, to, message) {
+        client.addListener('message', function (from, to, message) {
           console.log(from, to, message);
-          io.on('connection', function (socket) {
-            socket.emit('message', { message: message });
+          io.sockets.emit('message', {
+            channel: channel,
+            message: from + ': ' + message
           });
         });
 
-        clients[server].addListener('error', function (message) {
+        client.addListener('error', function (message) {
           console.error('error: ', message);
         });
 
         break;
+
       case '/j':
       case '/join':
         channel = input[1].trim();
-        console.log('curr channel ', channel)
-        clients[server].join(channel, function () {
+
+        client.join(channel, function () {
           console.log('connected to ', channel);
           //client.say('NickServ', 'IDENTIFY ' + nconf.get('password'));
+          res.json({
+            action: 'join',
+            channel: channel
+          });
         });
+
         break;
+
       case '/nick':
         nick = input[1].trim();
-        clients[server].say(channel, '/nick ' + nick);
+        client.send('nick', nick);
+        break;
+
       default:
         console.log('defaulting to ', input.join(' '));
+        client.say(channel, req.body.input.toString());
         break;
     };
   });

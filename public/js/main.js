@@ -1,12 +1,16 @@
 $(function () {
   var form = $('form');
   var input = $('textarea');
-  var messages = $('#messages');
+  var messages = $('#messages .inner');
   var history = [];
   var currHistoryPosition = 0;
   var socket = io();
 
   var HISTORY_MAX = 10;
+
+  var renderMessage = function (message) {
+    messages.append($('<p>').text(message));
+  };
 
   var submitForm = function () {
     var formContent = form.serialize();
@@ -18,7 +22,17 @@ $(function () {
     history.unshift(input.val());
     input.val('');
     $.post('/', formContent, function (data) {
-
+      switch (data.action) {
+        case 'join':
+          socket.on('connect', function () {
+            socket.emit('join', {
+              channel: data.channel
+            });
+          });
+          break;
+        default:
+          break;
+      }
     });
   };
 
@@ -26,6 +40,9 @@ $(function () {
     switch (ev.keyCode) {
       case 13:
         // enter
+        if (input.val().slice(0, 1) !== '/') {
+          renderMessage(input.val());
+        }
         submitForm();
         break;
       case 38:
@@ -55,6 +72,6 @@ $(function () {
   });
 
   socket.on('message', function (message) {
-    messages.append($('<p>').text(message.message));
+    renderMessage(message.message);
   });
 });
