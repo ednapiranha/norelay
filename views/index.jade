@@ -1,3 +1,17 @@
 extend layout
 
 block content
+  #wrapper
+    #channels
+      .inner
+        p test
+    #messages
+      .inner
+        p test
+    #users
+      .inner
+        p test
+
+block footer
+  form(method='POST')
+    textarea(id='input', name='input')
