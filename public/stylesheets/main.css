@@ -53,8 +53,71 @@ html, body {
 }
 
 @font-face {
-    font-family: 'droid_sans_monoregular';
-    src: url('../fonts/DroidSansMono-webfont.woff') format('woff');
+    font-family: 'Inconsolata';
+    src: url('../fonts/Inconsolata.woff') format('woff');
     font-weight: normal;
     font-style: normal;
+}
+
+html, body {
+    height: 100%;
+    position: relative;
+}
+
+body {
+    background-color: #222;
+}
+
+body, textarea {
+    font-family: 'Inconsolata';
+}
+
+section {
+    display: table;
+    height: 100%;
+    position: relative;
+    width: 100%;
+}
+
+#wrapper {
+    display: table-row;
+    padding: 10px;
+}
+
+#channels, #messages, #users {
+    display: table-cell;
+    padding-bottom: 40px;
+    position: relative;
+}
+
+.inner {
+    padding: 5px;
+}
+
+#channels, #users {
+    background-color: #f0f;
+    width: 15%;
+}
+
+#messages {
+    background-color: #f00;
+}
+
+#footer {
+    background-color: #444;
+    bottom: 0;
+    left: 0;
+    padding: 5px;
+    position: fixed;
+    right: 0;
+}
+
+#footer textarea {
+    background: transparent;
+    border: none;
+    color: #eee;
+    font-size: 18px;
+    height: 20px;
+    resize: none;
+    width: 100%;
 }
