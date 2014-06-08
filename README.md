@@ -1,16 +1,14 @@
-# graft
+# relay
 
 ## Installation instructions
 
 Clone the repository
 
-> git clone git://github.com/ednapiranha/graft.git
+> git clone git://github.com/ednapiranha/relay.git
 
-> cd graft
+> cd relay
 
 > cp local.json-dist local.json
-
-Install redis and run redis-server &
 
 > npm install
 
