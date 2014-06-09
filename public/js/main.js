@@ -1,77 +1,66 @@
-$(function () {
-  var form = $('form');
-  var input = $('textarea');
-  var messages = $('#messages .inner');
-  var history = [];
-  var currHistoryPosition = 0;
-  var socket = io();
+var form = document.getElementById('form');
+var input = document.getElementById('input');
+var messages = document.getElementById('messages-inner');
+var currHistoryPosition = 0;
+var socket = io();
+var messageArr = [];
+var xmlhttp = new XMLHttpRequest();
 
-  var HISTORY_MAX = 10;
+var HISTORY_MAX = 100;
 
-  var renderMessage = function (message) {
-    messages.append($('<p>').text(message));
-  };
+var renderMessage = function (message) {
+  messageArr.push('<p>' + message + '</p>');
+  messages.innerHTML = messageArr.join('');
+};
 
-  var submitForm = function () {
-    var formContent = form.serialize();
+var submitForm = function () {
+  if (messageArr.length > HISTORY_MAX) {
+    messageArr.pop();
+  }
 
-    if (history.length > HISTORY_MAX) {
-      history.pop();
-    }
+  var message = input.value;
+  input.value = '';
 
-    history.unshift(input.val());
-    input.val('');
-    $.post('/', formContent, function (data) {
-      switch (data.action) {
-        case 'join':
-          socket.on('connect', function () {
-            socket.emit('join', {
-              channel: data.channel
-            });
-          });
-          break;
-        default:
-          break;
+  xmlhttp.open('POST', '/', true);
+  xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  xmlhttp.send('input=' + encodeURIComponent(message));
+};
+
+form.onkeyup = function (ev) {
+  switch (ev.keyCode) {
+    case 13:
+      // enter
+      if (input.value.slice(0, 1) !== '/') {
+        renderMessage(input.value);
       }
-    });
-  };
+      submitForm();
+      break;
+    case 38:
+      // up arrow
+      input.value = messageArr[currHistoryPosition];
+      currHistoryPosition ++;
 
-  form.on('keyup', function (ev) {
-    switch (ev.keyCode) {
-      case 13:
-        // enter
-        if (input.val().slice(0, 1) !== '/') {
-          renderMessage(input.val());
-        }
-        submitForm();
-        break;
-      case 38:
-        // up arrow
-        input.val(history[currHistoryPosition]);
-        currHistoryPosition ++;
+      if (currHistoryPosition > messageArr.length - 1) {
+        currHistoryPosition = messageArr.length - 1;
+      }
 
-        if (currHistoryPosition > history.length - 1) {
-          currHistoryPosition = history.length - 1;
-        }
+      break;
+    case 40:
+      // down arrow
+      input.value = messageArr[currHistoryPosition];
+      console.log(input.value)
+      currHistoryPosition --;
 
-        break;
-      case 40:
-        // down arrow
-        input.val(history[currHistoryPosition]);
-        console.log(input.val())
-        currHistoryPosition --;
+      if (currHistoryPosition < 0) {
+        currHistoryPosition = 0;
+      }
 
-        if (currHistoryPosition < 0) {
-          currHistoryPosition = 0;
-        }
+      break;
+    default:
+      break;
+  }
+};
 
-        break;
-      default:
-        break;
-    }
-  });
-
-  socket.on('message', function (message) {
-    renderMessage(message.message);
-  });
+socket.on('message', function (message) {
+  renderMessage(message.message);
 });

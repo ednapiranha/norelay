@@ -15,7 +15,7 @@ module.exports = function (app, io, nconf) {
   app.post('/', function (req, res) {
     var input = req.body.input.trim().split(' ');
 
-    switch (input[0]) {
+    switch (input[0].toString().toLowerCase()) {
       case '/server':
         server = input[1].trim();
         console.log('1 ' , server);
@@ -36,7 +36,6 @@ module.exports = function (app, io, nconf) {
         client.addListener('error', function (message) {
           console.error('error: ', message);
         });
-
         break;
 
       case '/j':
@@ -51,7 +50,6 @@ module.exports = function (app, io, nconf) {
             channel: channel
           });
         });
-
         break;
 
       case '/nick':
@@ -61,7 +59,7 @@ module.exports = function (app, io, nconf) {
 
       default:
         console.log('defaulting to ', input.join(' '));
-        client.say(channel, req.body.input.toString());
+        client.say(channel, input.join(' '));
         break;
     };
   });
