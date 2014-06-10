@@ -1,3 +1,4 @@
+'use strict';
 
 var Socket = function (render) {
   var socket = io();

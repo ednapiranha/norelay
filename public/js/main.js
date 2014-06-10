@@ -1,7 +1,7 @@
+'use strict';
+
 var form = document.getElementById('form');
 var input = document.getElementById('input');
-
-var currHistoryPosition = 0;
 
 var xmlhttp = new XMLHttpRequest();
 var Render = require('./lib/render');
@@ -16,7 +16,7 @@ var submitForm = function () {
     render.messagesArr.pop();
   }
 
-  var message = input.value;
+  var message = input.value.trim();
   input.value = '';
 
   xmlhttp.open('POST', '/', true);
@@ -41,21 +41,22 @@ form.onkeyup = function (ev) {
       break;
     case 38:
       // up arrow
-      input.value = render.messageArr[currHistoryPosition];
-      currHistoryPosition ++;
+      input.value = render.messageArr[render.currHistoryPosition];
+      console.log('up: ', input.value, render.currHistoryPosition)
+      render.currHistoryPosition ++;
 
-      if (currHistoryPosition > render.messageArr.length - 1) {
-        currHistoryPosition = render.messageArr.length - 1;
+      if (render.currHistoryPosition > render.messageArr.length - 1) {
+        render.currHistoryPosition = render.messageArr.length - 1;
       }
       break;
     case 40:
       // down arrow
-      input.value = render.messageArr[currHistoryPosition];
-      console.log(input.value)
-      currHistoryPosition --;
+      input.value = render.messageArr[render.currHistoryPosition];
+      console.log('down: ', input.value, render.currHistoryPosition)
+      render.currHistoryPosition --;
 
-      if (currHistoryPosition < 0) {
-        currHistoryPosition = 0;
+      if (render.currHistoryPosition < 0) {
+        render.currHistoryPosition = 0;
       }
       break;
     default:

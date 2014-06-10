@@ -1,9 +1,12 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
 var Render = function () {
   this.HISTORY_MAX = 100;
   this.messages = document.getElementById('messages-inner');
   this.channelContent = document.getElementById('channel-inner');
   this.usersContent = document.getElementById('users-inner');
+  this.currHistoryPosition = 0;
   this.channels = {};
   this.messageArr = [];
   this.currChannel;
@@ -31,7 +34,7 @@ var Render = function () {
 
   this.message = function (message) {
     this.channels[message.channel].messages.push('<p>' + message.message + '</p>');
-    this.messageArr.push(message.message);
+    this.messageArr.unshift(message.message);
     this.messages.innerHTML = this.channels[message.channel].messages.join('');
   };
 };
@@ -39,6 +42,7 @@ var Render = function () {
 module.exports = Render;
 
 },{}],2:[function(require,module,exports){
+'use strict';
 
 var Socket = function (render) {
   var socket = io();
@@ -64,10 +68,10 @@ var Socket = function (render) {
 module.exports = Socket;
 
 },{}],3:[function(require,module,exports){
+'use strict';
+
 var form = document.getElementById('form');
 var input = document.getElementById('input');
-
-var currHistoryPosition = 0;
 
 var xmlhttp = new XMLHttpRequest();
 var Render = require('./lib/render');
@@ -82,7 +86,7 @@ var submitForm = function () {
     render.messagesArr.pop();
   }
 
-  var message = input.value;
+  var message = input.value.trim();
   input.value = '';
 
   xmlhttp.open('POST', '/', true);
@@ -107,21 +111,22 @@ form.onkeyup = function (ev) {
       break;
     case 38:
       // up arrow
-      input.value = render.messageArr[currHistoryPosition];
-      currHistoryPosition ++;
+      input.value = render.messageArr[render.currHistoryPosition];
+      console.log('up: ', input.value, render.currHistoryPosition)
+      render.currHistoryPosition ++;
 
-      if (currHistoryPosition > render.messageArr.length - 1) {
-        currHistoryPosition = render.messageArr.length - 1;
+      if (render.currHistoryPosition > render.messageArr.length - 1) {
+        render.currHistoryPosition = render.messageArr.length - 1;
       }
       break;
     case 40:
       // down arrow
-      input.value = render.messageArr[currHistoryPosition];
-      console.log(input.value)
-      currHistoryPosition --;
+      input.value = render.messageArr[render.currHistoryPosition];
+      console.log('down: ', input.value, render.currHistoryPosition)
+      render.currHistoryPosition --;
 
-      if (currHistoryPosition < 0) {
-        currHistoryPosition = 0;
+      if (render.currHistoryPosition < 0) {
+        render.currHistoryPosition = 0;
       }
       break;
     default:

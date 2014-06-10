@@ -68,7 +68,7 @@ body {
     background-color: #222;
 }
 
-body, textarea {
+body, textarea, input {
     font-family: 'Inconsolata';
 }
 
@@ -114,7 +114,7 @@ section {
     right: 0;
 }
 
-#footer textarea {
+#footer textarea, #footer input {
     background: transparent;
     border: none;
     color: #eee;

@@ -1,8 +1,11 @@
+'use strict';
+
 var Render = function () {
   this.HISTORY_MAX = 100;
   this.messages = document.getElementById('messages-inner');
   this.channelContent = document.getElementById('channel-inner');
   this.usersContent = document.getElementById('users-inner');
+  this.currHistoryPosition = 0;
   this.channels = {};
   this.messageArr = [];
   this.currChannel;
@@ -30,7 +33,7 @@ var Render = function () {
 
   this.message = function (message) {
     this.channels[message.channel].messages.push('<p>' + message.message + '</p>');
-    this.messageArr.push(message.message);
+    this.messageArr.unshift(message.message);
     this.messages.innerHTML = this.channels[message.channel].messages.join('');
   };
 };

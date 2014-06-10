@@ -16,6 +16,10 @@ module.exports = function (app, io, nconf) {
   app.post('/', function (req, res) {
     var input = req.body.input.trim().split(' ');
 
+    if (!server) {
+      return;
+    }
+
     switch (input[0].toString().toLowerCase()) {
       case '/server':
         server = input[1].trim();
