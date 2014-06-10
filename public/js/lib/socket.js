@@ -8,6 +8,10 @@ var Socket = function (render) {
     render.channel(render.currChannel);
   });
 
+  socket.on('nick', function (nick) {
+    render.nick = nick;
+  });
+
   socket.on('users', function (users) {
     render.channel(render.currChannel);
     render.channels[render.currChannel].users = users.users;

@@ -16,10 +16,6 @@ module.exports = function (app, io, nconf) {
   app.post('/', function (req, res) {
     var input = req.body.input.trim().split(' ');
 
-    if (!server) {
-      return;c
-    }
-
     switch (input[0].toString().toLowerCase()) {
       case '/server':
         server = input[1].trim();
@@ -70,6 +66,9 @@ module.exports = function (app, io, nconf) {
         break;
 
       default:
+        if (!server) {
+          return;
+        }
         console.log('defaulting to ', input.join(' '));
         client.say(activeChannel, input.join(' '));
         break;

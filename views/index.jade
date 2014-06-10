@@ -4,13 +4,19 @@ block content
   #wrapper
     #channels
       ul.inner#channel-inner
+        li #test-channel
+        li #second-channel
 
     #messages
       .inner#messages-inner
+        p ednapiranha: hi there! here is a link <a href="#">http://facespac.es</a>
+        p.self frida: hey what's up?
 
     #users
       ul.inner#users-inner
+        li @ednapiranha
+        li frida
 
 block footer
-  form(method='POST', id='form')
-    input(type='text', id='input', name='input')
+  form(id='form')
+    textarea(id='input', name='input', rows='1')

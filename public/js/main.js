@@ -27,20 +27,22 @@ var submitForm = function () {
 form.onkeyup = function (ev) {
   switch (ev.keyCode) {
     case 13:
+      ev.preventDefault();
       // enter
       if (input.value.slice(0, 1) !== '/') {
         render.channel(render.currChannel);
-
         render.message({
           message: input.value,
           channel: render.currChannel
-        });
+        }, true);
       }
 
       submitForm();
       break;
     case 38:
+      ev.preventDefault();
       // up arrow
+      input.value = '';
       input.value = render.messageArr[render.currHistoryPosition];
       console.log('up: ', input.value, render.currHistoryPosition)
       render.currHistoryPosition ++;
@@ -50,7 +52,9 @@ form.onkeyup = function (ev) {
       }
       break;
     case 40:
+      ev.preventDefault();
       // down arrow
+      input.value = '';
       input.value = render.messageArr[render.currHistoryPosition];
       console.log('down: ', input.value, render.currHistoryPosition)
       render.currHistoryPosition --;

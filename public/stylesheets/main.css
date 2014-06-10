@@ -85,7 +85,9 @@ section {
 }
 
 #channels, #messages, #users {
+    font-size: 1rem;
     display: table-cell;
+    line-height: 1.2rem;
     padding-bottom: 40px;
     position: relative;
 }
@@ -103,6 +105,14 @@ section {
 #messages {
     background-color: #333;
     color: #aaa;
+}
+
+#messages a {
+    color: #63def6;
+}
+
+#messages p.self {
+    color: #ddd;
 }
 
 #footer {
