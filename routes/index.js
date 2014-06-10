@@ -17,13 +17,12 @@ module.exports = function (app, io, nconf) {
     var input = req.body.input.trim().split(' ');
 
     if (!server) {
-      return;
+      return;c
     }
 
     switch (input[0].toString().toLowerCase()) {
       case '/server':
         server = input[1].trim();
-        console.log('1 ' , server);
         client = new irc.Client(server, nick);
 
         client.addListener('registered', function (message) {
