@@ -95,12 +95,14 @@ section {
 }
 
 #channels, #users {
-    background-color: #f0f;
+    background-color: #222;
+    color: #888;
     width: 15%;
 }
 
 #messages {
-    background-color: #f00;
+    background-color: #333;
+    color: #aaa;
 }
 
 #footer {
