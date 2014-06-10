@@ -1,21 +1,48 @@
 var form = document.getElementById('form');
 var input = document.getElementById('input');
 var messages = document.getElementById('messages-inner');
+var channelContent = document.getElementById('channel-inner');
+var usersContent = document.getElementById('users-inner');
 var currHistoryPosition = 0;
 var socket = io();
+var channels = {};
 var messageArr = [];
+var currChannel;
 var xmlhttp = new XMLHttpRequest();
 
 var HISTORY_MAX = 100;
 
+var setChannel = function (channel) {
+  if (!channels[channel]) {
+    channels[channel] = {
+      users: [],
+      messages: []
+    };
+
+    channelContent.innerHTML += '<li>' + channel + '</li>';
+  }
+};
+
+var renderUsers = function () {
+  var users = '';
+
+  for (var k in channels[currChannel].users) {
+    users += '<li>' + k + '</li>';
+  }
+
+  usersContent.innerHTML = users;
+};
+
 var renderMessage = function (message) {
-  messageArr.push('<p>' + message + '</p>');
-  messages.innerHTML = messageArr.join('');
+  channels[message.channel].messages.push('<p>' + message.message + '</p>');
+  messageArr.push(message.message);
+  messages.innerHTML = channels[message.channel].messages.join('');
 };
 
 var submitForm = function () {
-  if (messageArr.length > HISTORY_MAX) {
-    messageArr.pop();
+  if (channels[currChannel] && channels[currChannel].messages.length > HISTORY_MAX) {
+    channels[currChannel].messages.pop();
+    messagesArr.pop();
   }
 
   var message = input.value;
@@ -31,8 +58,14 @@ form.onkeyup = function (ev) {
     case 13:
       // enter
       if (input.value.slice(0, 1) !== '/') {
-        renderMessage(input.value);
+        setChannel(currChannel);
+
+        renderMessage({
+          message: input.value,
+          channel: currChannel
+        });
       }
+
       submitForm();
       break;
     case 38:
@@ -43,7 +76,6 @@ form.onkeyup = function (ev) {
       if (currHistoryPosition > messageArr.length - 1) {
         currHistoryPosition = messageArr.length - 1;
       }
-
       break;
     case 40:
       // down arrow
@@ -54,13 +86,25 @@ form.onkeyup = function (ev) {
       if (currHistoryPosition < 0) {
         currHistoryPosition = 0;
       }
-
       break;
     default:
       break;
   }
 };
 
+socket.on('channel', function (channel) {
+  currChannel = channel;
+  setChannel(currChannel);
+});
+
+socket.on('users', function (users) {
+  setChannel(currChannel);
+  channels[currChannel].users = users.users;
+  renderUsers();
+});
+
 socket.on('message', function (message) {
-  renderMessage(message.message);
+  setChannel(message.channel);
+
+  renderMessage(message);
 });
