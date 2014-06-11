@@ -24,6 +24,8 @@
     "twitter-text": "~1.9.0"
   },
   "devDependencies": {
-    "nodemon": "*"
+    "nodemon": "*",
+    "vinyl-source-stream": "~0.1.1",
+    "gulp": "~3.8.0"
   }
 }

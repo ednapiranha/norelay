@@ -16,6 +16,10 @@ Run the site
 
     > npm start
 
+Watch files
+
+    > gulp watch
+
 Connect to a server
 
 * Go to [http://localhost:3000](http://localhost:3000) and at the input type `/server irc.freenode.net`
